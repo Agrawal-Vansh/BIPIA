@@ -16,13 +16,13 @@ from openai.error import (
     APIError,
 )
 
-from accelerate.logging import get_logger
+import logging
 
 from .base import BaseModel
 
 __all__ = ["GPTModel", "GPT35", "GPT4"]
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_retry_time(err_info):

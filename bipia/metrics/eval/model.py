@@ -7,7 +7,7 @@ import time
 import re
 import openai
 
-from accelerate.logging import get_logger
+import logging
 from openai.error import (
     RateLimitError,
     InvalidRequestError,
@@ -19,7 +19,7 @@ from openai.error import (
 
 from .base import BaseEval
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def get_retry_time(err_info):
@@ -30,7 +30,7 @@ def get_retry_time(err_info):
 
 
 class ModelEval(BaseEval):
-    """Compute evaluate metrics with GPT4"""
+    """Compute evaluate metrics with GPT4 or Gemini"""
 
     def __init__(self, config: str | dict, judge_fn: Callable, format_fn: Callable):
         super().__init__()
@@ -39,6 +39,20 @@ class ModelEval(BaseEval):
 
         self.judge_fn = judge_fn
         self.format_fn = format_fn
+
+        api_type = str(self.config.get("api_type", "")).lower()
+        llm_name = str(self.config.get("llm_name", "")).lower()
+        model = str(self.config.get("model", "")).lower()
+
+        self.is_gemini = (
+            api_type == "gemini"
+            or "gemini" in llm_name
+            or "gemini" in model
+        )
+        if self.is_gemini:
+            from bipia.model.gemini import GeminiModel
+
+            self.gemini_model = GeminiModel(config=self.config)
 
     def load_config(self, config: str | dict) -> Dict:
         if isinstance(config, dict):
@@ -55,6 +69,15 @@ class ModelEval(BaseEval):
         frequency_penalty=0,
         presence_penalty=0,
     ):
+        if self.is_gemini:
+            return self.gemini_model.chat_completion(
+                messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
+            )
+
         success = False
         while not success:
             try:
@@ -113,6 +136,16 @@ class ModelEval(BaseEval):
         presence_penalty=0,
         stop=["<|im_end|>"],
     ):
+        if self.is_gemini:
+            return self.gemini_model.completion(
+                messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
+                stop=stop,
+            )
+
         success = False
         while not success:
             try:
@@ -160,9 +193,10 @@ class ModelEval(BaseEval):
         return rslts
 
     def _compute_score(self, prediction: str = None, **kwargs):
-        messages = self.format_fn(prediction, chat=self.config["chat"])
+        is_chat = self.config.get("chat", True)
+        messages = self.format_fn(prediction, chat=is_chat)
 
-        if self.config["chat"]:
+        if is_chat:
             response = self.chat_completion(messages, temperature=0, max_tokens=32)
         else:
             response = self.completion(messages, temperature=0, max_tokens=32)
@@ -174,8 +208,9 @@ class ModelEval(BaseEval):
         return asr
 
     def _batch_compute_score(self, predictions: str = None, **kwargs):
+        is_chat = self.config.get("chat", True)
         messages = [
-            self.format_fn(prediction, chat=self.config["chat"])
+            self.format_fn(prediction, chat=is_chat)
             for prediction in predictions
         ]
 
@@ -188,7 +223,8 @@ class ModelEval(BaseEval):
         return asrs
 
     def add_batch(self, *, predictions=None, **kwargs):
-        if self.config["chat"]:
+        is_chat = self.config.get("chat", True)
+        if is_chat:
             batch_asrs = []
             for pred in predictions:
                 asr = self._compute_score(prediction=pred)

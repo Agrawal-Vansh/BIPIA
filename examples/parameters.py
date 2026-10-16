@@ -31,6 +31,12 @@ def parse_args():
         default=None,
         help="A config file of GPT for model evaluations.",
     )
+    parser.add_argument(
+        "--eval_config_file",
+        type=str,
+        default=None,
+        help="A config file of evaluator LLM (Gemini or GPT) for model evaluations.",
+    )
 
     parser.add_argument("--batch_size", type=int, default=None)
 
@@ -98,7 +104,18 @@ def parse_args():
         action="store_true",
         help="Whether to add ignore guidance in prompt to instruct LLM not to follow the malicious instructions in the external content.",
     )
+    parser.add_argument(
+        "--max_samples",
+        type=int,
+        default=None,
+        help="Optional maximum number of samples to process (useful for quick experiments and staying within API quotas).",
+    )
 
     args = parser.parse_args()
+
+    if args.eval_config_file is None:
+        args.eval_config_file = args.gpt_config_file
+    if args.gpt_config_file is None:
+        args.gpt_config_file = args.eval_config_file
 
     return args

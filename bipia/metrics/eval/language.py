@@ -4,11 +4,11 @@
 from langdetect import detect_langs
 from langdetect.lang_detect_exception import LangDetectException
 
-from accelerate.logging import get_logger
+import logging
 
 from .base import BaseEval
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class LanguageEval(BaseEval):

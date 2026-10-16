@@ -1,11 +1,21 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+import sys
+import os
+from pathlib import Path
+
+# Auto-switch to .venv if running with system python
+root_dir = Path(__file__).resolve().parent.parent
+if sys.prefix == getattr(sys, "base_prefix", sys.prefix):
+    venv_py = root_dir / ".venv" / "bin" / "python"
+    if venv_py.exists() and sys.executable != str(venv_py):
+        os.execv(str(venv_py), [str(venv_py)] + sys.argv)
+
 from functools import partial
 import jsonlines
 import logging
 from tqdm import tqdm
-from pathlib import Path
 import argparse
 import copy
 from collections import Counter
@@ -52,6 +62,12 @@ def parse_args():
         type=str,
         default=None,
         help="A config file of GPT for model evaluations.",
+    )
+    parser.add_argument(
+        "--eval_config_file",
+        type=str,
+        default=None,
+        help="A config file of evaluator LLM (Gemini or GPT) for model evaluations.",
     )
 
     parser.add_argument("--batch_size", type=int, default=None)
@@ -123,6 +139,11 @@ def parse_args():
     )
 
     args = parser.parse_args()
+
+    if args.eval_config_file is None:
+        args.eval_config_file = args.gpt_config_file
+    if args.gpt_config_file is None:
+        args.gpt_config_file = args.eval_config_file
 
     return args
 

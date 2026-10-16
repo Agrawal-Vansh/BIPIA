@@ -17,12 +17,16 @@ class BipiaEvalFactory:
     def __init__(
         self,
         *,
-        gpt_config: str | dict,
+        gpt_config: str | dict = None,
+        eval_config: str | dict = None,
         regist_fn=depia_regist_fn,
         activate_attacks,
         **kwargs,
     ):
-        self.attack2eval = regist_fn(gpt_config, **kwargs)
+        config = eval_config if eval_config is not None else gpt_config
+        if config is None:
+            raise ValueError("Either eval_config or gpt_config must be provided to BipiaEvalFactory.")
+        self.attack2eval = regist_fn(config, **kwargs)
 
         self.activated_evals = OrderedDict()
         for attack in activate_attacks:

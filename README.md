@@ -73,33 +73,43 @@ For different task of different split (train/test), set `context_data_file` as t
 
 
 #### Evaluation
-In our work, we evaluate the robustness of 25 existing large language models to indirect prompt injection attacks on BIPIA.
-To reproduce the evaluation results in our paper, execute the following commands.
+In our work, we evaluate the robustness of large language models to indirect prompt injection attacks on BIPIA.
+Both OpenAI (GPT) and Google Gemini models are supported for generating model responses and computing evaluation metrics.
+
+##### Setting up Gemini API
+Since Google Gemini provides a free tier, you can easily run evaluations without OpenAI API costs:
+```bash
+export GEMINI_API_KEY="your_gemini_api_key_here"
+```
+Or insert your API key into `config/gemini.yaml` (or `config/gemini_15_flash.yaml`, `config/gemini_25_flash.yaml`).
+
+##### Running Evaluation
+Execute the following commands to generate responses and compute attack success rate (ASR):
 
 ```bash
 cd examples
 
-# generate respones
+# 1. Generate model responses (e.g. using Gemini 1.5 Flash):
 python run.py --seed 2023 --dataset_name {task} \
---context_data_file path/of/external/conten/file \
---attack_data_file path/of/attack/file \
---llm_config_file config/{llm_name}.yaml \
---batch_size 20 --output_path path/of/output/file \
+--context_data_file ../benchmark/{task}/test.jsonl \
+--attack_data_file ../benchmark/text_attack_test.json \
+--llm_config_file ../config/gemini.yaml \
+--batch_size 20 --output_path ../output/gemini_{task}.jsonl \
 --log_steps 10 --resume
 
-# compute attack success rate
+# 2. Compute attack success rate (ASR) using Gemini as judge:
 python run.py --mode evaluate --seed 2023 \
 --dataset_name {task} \
---response_path path/of/output/file \
---output_path path/of/asr/file \
---gpt_config_file config/{evaluate_llm_name}.yaml \
+--response_path ../output/gemini_{task}.jsonl \
+--output_path ../output/gemini_{task}_asr.jsonl \
+--eval_config_file ../config/gemini_eval.yaml \
 --batch_size 20 --log_steps 10 --resume
 ```
 
 Arguments:
-- `task`: the selected task name, you can choose anyone from `["code", "email", "qa", "abstract", "table"]`
-- `llm_name`: the name of the LLMs. Select from the config file in `config` directory.
-- `evaluate_llm_name`: the name of the LLMs for evaluation. Use `gpt35` by default.
+- `task`: the selected task name, you can choose from `["code", "email", "qa", "abstract", "table"]`
+- `llm_name`: the name of the LLM config file in `config/` directory (e.g. `gemini`, `gemini_15_flash`, `gemini_25_flash`, `gpt35`, etc.)
+- `eval_config_file`: the evaluation judge model config file (e.g. `config/gemini_eval.yaml`, `config/gemini.yaml`, or `config/gpt35.yaml`). `--gpt_config_file` is also supported as an alias.
 
 ### Defense
 We also propose two type of defense methods.

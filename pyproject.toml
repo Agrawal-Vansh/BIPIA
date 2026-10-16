@@ -32,6 +32,7 @@ dependencies = [
     "langdetect",
     "thefuzz",
     "openai==0.28.1",
+    "google-genai>=1.0.0",
     "pandas",
     "emoji"
 ]

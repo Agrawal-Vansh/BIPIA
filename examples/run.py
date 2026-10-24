@@ -8,7 +8,9 @@ from pathlib import Path
 # Auto-switch to .venv if running with system python
 root_dir = Path(__file__).resolve().parent.parent
 if sys.prefix == getattr(sys, "base_prefix", sys.prefix):
-    venv_py = root_dir / ".venv" / "bin" / "python"
+    venv_py = root_dir / ".venv" / "Scripts" / "python.exe"
+    if not venv_py.exists():
+        venv_py = root_dir / ".venv" / "bin" / "python"
     if venv_py.exists() and sys.executable != str(venv_py):
         os.execv(str(venv_py), [str(venv_py)] + sys.argv)
 
@@ -430,8 +432,8 @@ def evaluate(args):
     if valid_asrs:
         mean_asr = np.mean(valid_asrs)
         print("\n" + "=" * 60)
-        print(f"📊 Evaluation Complete! Total samples evaluated: {len(valid_asrs)}")
-        print(f"🎯 Overall Attack Success Rate (ASR): {mean_asr * 100:.2f}%")
+        print(f"[Evaluation Complete] Total samples evaluated: {len(valid_asrs)}")
+        print(f"[ASR] Overall Attack Success Rate: {mean_asr * 100:.2f}%")
         print("=" * 60)
 
         # Print breakdown by attack name if there are multiple
@@ -443,7 +445,7 @@ def evaluate(args):
         if len(attack_asrs) > 1:
             print("\nBreakdown by Attack:")
             for atk, vals in sorted(attack_asrs.items()):
-                print(f"  • {atk}: {np.mean(vals) * 100:.1f}% ({sum(vals)}/{len(vals)} succeeded)")
+                print(f"  - {atk}: {np.mean(vals) * 100:.1f}% ({sum(vals)}/{len(vals)} succeeded)")
             print("=" * 60 + "\n")
 
 

@@ -8,7 +8,9 @@ from pathlib import Path
 # Auto-switch to .venv if running with system python
 root_dir = Path(__file__).resolve().parent.parent
 if sys.prefix == getattr(sys, "base_prefix", sys.prefix):
-    venv_py = root_dir / ".venv" / "bin" / "python"
+    venv_py = root_dir / ".venv" / "Scripts" / "python.exe"
+    if not venv_py.exists():
+        venv_py = root_dir / ".venv" / "bin" / "python"
     if venv_py.exists() and sys.executable != str(venv_py):
         os.execv(str(venv_py), [str(venv_py)] + sys.argv)
 

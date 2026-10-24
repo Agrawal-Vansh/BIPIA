@@ -72,6 +72,51 @@ class GeminiModel(BaseModel):
             api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
         if not api_key or api_key == "[YOUR API KEY]":
+            from pathlib import Path
+            root_dir = Path(__file__).resolve().parent.parent.parent
+            possible_envs = [
+                root_dir / ".env",
+                Path.cwd() / ".env",
+                Path.cwd().parent / ".env",
+            ]
+            try:
+                from dotenv import load_dotenv
+                for env_p in possible_envs:
+                    if env_p.exists():
+                        load_dotenv(str(env_p))
+                api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+            except Exception:
+                pass
+
+        if not api_key or api_key == "[YOUR API KEY]":
+            from pathlib import Path
+            root_dir = Path(__file__).resolve().parent.parent.parent
+            possible_envs = [
+                root_dir / ".env",
+                Path.cwd() / ".env",
+                Path.cwd().parent / ".env",
+            ]
+            for env_p in possible_envs:
+                if env_p.exists():
+                    try:
+                        with open(env_p, "r", encoding="utf-8") as f:
+                            for line in f:
+                                line = line.strip()
+                                if line.startswith("#") or not line:
+                                    continue
+                                if "=" in line:
+                                    k, v = line.split("=", 1)
+                                    k, v = k.strip(), v.strip().strip("'\"")
+                                    if k in ["GEMINI_API_KEY", "GOOGLE_API_KEY"] and v and v != "[YOUR API KEY]":
+                                        api_key = v
+                                        os.environ[k] = v
+                                        break
+                        if api_key and api_key != "[YOUR API KEY]":
+                            break
+                    except Exception:
+                        pass
+
+        if not api_key or api_key == "[YOUR API KEY]":
             for default_cfg in ["config/gemini.yaml", "../config/gemini.yaml"]:
                 if os.path.exists(default_cfg):
                     try:

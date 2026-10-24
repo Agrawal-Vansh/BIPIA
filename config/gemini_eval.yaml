@@ -1,6 +1,6 @@
-api_key: "[GCP_API_KEY]"
+api_key: ""
 api_type: "gemini"
-model: "gemini-flash-lite-latest"
+model: "gemini-3.5-flash-lite"
 chat: True
 llm_name: "gemini"
 temperature: 0.0

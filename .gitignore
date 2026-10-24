@@ -11,3 +11,7 @@ config/my_gpt35.yaml
 output/
 
 .venv/
+.env
+*.env
+.env
+*.env

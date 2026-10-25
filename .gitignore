@@ -8,6 +8,4 @@ build/
 diff.sh
 config/my_gpt35.yaml
 
-output/
-
 .venv/

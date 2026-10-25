@@ -1,0 +1,103 @@
+==========================================================
+Evaluating ASR for category: email
+Response File: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_email_100.jsonl
+ASR Output: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_email_100_asr.jsonl
+Started at: Sun Oct 25 07:20:38 UTC 2026
+==========================================================
+[transformers] Disabling PyTorch because PyTorch >= 2.5 is required but found 2.4.0
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+WARNING 10-25 07:20:44 _custom_ops.py:15] Failed to import from vllm._C with ImportError('libcuda.so.1: cannot open shared object file: No such file or directory')
+10/25/2026 07:20:45 - INFO - __main__ - [RANK 0] Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: no
+
+Filter pre-requested messages.:   0%|          | 0/100 [00:00<?, ? examples/s]Filter pre-requested messages.: 100%|██████████| 100/100 [00:00<00:00, 20353.78 examples/s]
+10/25/2026 07:20:46 - INFO - __main__ - [RANK 0] Already Finished. No need to resume.
+Finished evaluating ASR for category: email at Sun Oct 25 07:20:47 UTC 2026
+==========================================================
+Evaluating ASR for category: qa
+Response File: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_qa_100.jsonl
+ASR Output: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_qa_100_asr.jsonl
+Started at: Sun Oct 25 07:20:47 UTC 2026
+==========================================================
+[transformers] Disabling PyTorch because PyTorch >= 2.5 is required but found 2.4.0
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+WARNING 10-25 07:20:53 _custom_ops.py:15] Failed to import from vllm._C with ImportError('libcuda.so.1: cannot open shared object file: No such file or directory')
+10/25/2026 07:20:54 - INFO - __main__ - [RANK 0] Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: no
+
+Filter pre-requested messages.:   0%|          | 0/100 [00:00<?, ? examples/s]Filter pre-requested messages.: 100%|██████████| 100/100 [00:00<00:00, 12145.43 examples/s]
+10/25/2026 07:20:55 - INFO - __main__ - [RANK 0] Already Finished. No need to resume.
+Finished evaluating ASR for category: qa at Sun Oct 25 07:20:56 UTC 2026
+==========================================================
+Evaluating ASR for category: code
+Response File: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_code_100.jsonl
+ASR Output: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_code_100_asr.jsonl
+Started at: Sun Oct 25 07:20:56 UTC 2026
+==========================================================
+[transformers] Disabling PyTorch because PyTorch >= 2.5 is required but found 2.4.0
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+WARNING 10-25 07:21:01 _custom_ops.py:15] Failed to import from vllm._C with ImportError('libcuda.so.1: cannot open shared object file: No such file or directory')
+10/25/2026 07:21:02 - INFO - __main__ - [RANK 0] Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: no
+
+Filter pre-requested messages.:   0%|          | 0/100 [00:00<?, ? examples/s]Filter pre-requested messages.: 100%|██████████| 100/100 [00:00<00:00, 18263.10 examples/s]
+10/25/2026 07:21:04 - INFO - __main__ - [RANK 0] Already Finished. No need to resume.
+Finished evaluating ASR for category: code at Sun Oct 25 07:21:05 UTC 2026
+==========================================================
+Evaluating ASR for category: table
+Response File: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_table_100.jsonl
+ASR Output: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_table_100_asr.jsonl
+Started at: Sun Oct 25 07:21:05 UTC 2026
+==========================================================
+[transformers] Disabling PyTorch because PyTorch >= 2.5 is required but found 2.4.0
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+WARNING 10-25 07:21:11 _custom_ops.py:15] Failed to import from vllm._C with ImportError('libcuda.so.1: cannot open shared object file: No such file or directory')
+10/25/2026 07:21:12 - INFO - __main__ - [RANK 0] Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: no
+
+Filter pre-requested messages.:   0%|          | 0/100 [00:00<?, ? examples/s]Filter pre-requested messages.: 100%|██████████| 100/100 [00:00<00:00, 13426.50 examples/s]
+10/25/2026 07:21:13 - INFO - __main__ - [RANK 0] Already Finished. No need to resume.
+Finished evaluating ASR for category: table at Sun Oct 25 07:21:14 UTC 2026
+==========================================================
+Evaluating ASR for category: abstract
+Response File: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_abstract_100.jsonl
+ASR Output: /home/vansh_agrawal/projects/BIPIA/output/qwen25_3b_abstract_100_asr.jsonl
+Started at: Sun Oct 25 07:21:14 UTC 2026
+==========================================================
+[transformers] Disabling PyTorch because PyTorch >= 2.5 is required but found 2.4.0
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+WARNING 10-25 07:21:20 _custom_ops.py:15] Failed to import from vllm._C with ImportError('libcuda.so.1: cannot open shared object file: No such file or directory')
+10/25/2026 07:21:21 - INFO - __main__ - [RANK 0] Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: no
+
+Filter pre-requested messages.:   0%|          | 0/100 [00:00<?, ? examples/s]Filter pre-requested messages.: 100%|██████████| 100/100 [00:00<00:00, 20446.06 examples/s]
+10/25/2026 07:21:22 - INFO - __main__ - [RANK 0] Already Finished. No need to resume.
+Finished evaluating ASR for category: abstract at Sun Oct 25 07:21:23 UTC 2026
+==========================================================
+All 5 category ASR evaluations completed successfully!
+==========================================================

@@ -7,14 +7,27 @@ import os
 import re
 import time
 import openai
-from openai.error import (
-    RateLimitError,
-    InvalidRequestError,
-    Timeout,
-    APIConnectionError,
-    ServiceUnavailableError,
-    APIError,
-)
+try:
+    from openai.error import (
+        RateLimitError,
+        InvalidRequestError,
+        Timeout,
+        APIConnectionError,
+        ServiceUnavailableError,
+        APIError,
+    )
+except ImportError:
+    try:
+        from openai import (
+            RateLimitError,
+            BadRequestError as InvalidRequestError,
+            APITimeoutError as Timeout,
+            APIConnectionError,
+            InternalServerError as ServiceUnavailableError,
+            APIError,
+        )
+    except ImportError:
+        RateLimitError = InvalidRequestError = Timeout = APIConnectionError = ServiceUnavailableError = APIError = Exception
 
 import logging
 

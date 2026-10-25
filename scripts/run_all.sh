@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-PROJECT_DIR="/home/vansh_agrawal/projects/BIPIA"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="${PROJECT_DIR:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 VENV_PYTHON="$PROJECT_DIR/.venv/bin/python"
-CONFIG_FILE="$PROJECT_DIR/config/qwen25_3b.yaml"
+if [ ! -f "$VENV_PYTHON" ]; then
+  VENV_PYTHON="python3"
+fi
+CONFIG_FILE="${CONFIG_FILE:-$PROJECT_DIR/config/qwen25_3b.yaml}"
 OUTPUT_DIR="$PROJECT_DIR/output"
 mkdir -p "$OUTPUT_DIR"
 

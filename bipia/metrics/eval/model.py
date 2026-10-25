@@ -8,14 +8,27 @@ import re
 import openai
 
 import logging
-from openai.error import (
-    RateLimitError,
-    InvalidRequestError,
-    Timeout,
-    APIConnectionError,
-    APIError,
-    ServiceUnavailableError,
-)
+try:
+    from openai.error import (
+        RateLimitError,
+        InvalidRequestError,
+        Timeout,
+        APIConnectionError,
+        APIError,
+        ServiceUnavailableError,
+    )
+except ImportError:
+    try:
+        from openai import (
+            RateLimitError,
+            BadRequestError as InvalidRequestError,
+            APITimeoutError as Timeout,
+            APIConnectionError,
+            APIError,
+            InternalServerError as ServiceUnavailableError,
+        )
+    except ImportError:
+        RateLimitError = InvalidRequestError = Timeout = APIConnectionError = APIError = ServiceUnavailableError = Exception
 
 from .base import BaseEval
 
@@ -30,7 +43,7 @@ def get_retry_time(err_info):
 
 
 class ModelEval(BaseEval):
-    """Compute evaluate metrics with GPT4 or Gemini"""
+    """Compute evaluate metrics with GPT4, Gemini, or Ollama"""
 
     def __init__(self, config: str | dict, judge_fn: Callable, format_fn: Callable):
         super().__init__()
@@ -54,6 +67,16 @@ class ModelEval(BaseEval):
 
             self.gemini_model = GeminiModel(config=self.config)
 
+        self.is_ollama = (
+            api_type == "ollama"
+            or "ollama" in llm_name
+            or "ollama" in model
+        )
+        if self.is_ollama:
+            from bipia.model.ollama_model import OllamaModel
+
+            self.ollama_model = OllamaModel(config=self.config)
+
     def load_config(self, config: str | dict) -> Dict:
         if isinstance(config, dict):
             return config
@@ -76,6 +99,12 @@ class ModelEval(BaseEval):
                 max_tokens=max_tokens,
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty,
+            )
+        if self.is_ollama:
+            return self.ollama_model.chat_completion(
+                messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
             )
 
         success = False
@@ -144,6 +173,12 @@ class ModelEval(BaseEval):
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty,
                 stop=stop,
+            )
+        if self.is_ollama:
+            return self.ollama_model.completion(
+                messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
             )
 
         success = False

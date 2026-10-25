@@ -74,42 +74,123 @@ For different task of different split (train/test), set `context_data_file` as t
 
 #### Evaluation
 In our work, we evaluate the robustness of large language models to indirect prompt injection attacks on BIPIA.
-Both OpenAI (GPT) and Google Gemini models are supported for generating model responses and computing evaluation metrics.
+BIPIA supports **OpenAI (GPT)**, **Google Gemini API**, **Qwen LLM (OpenAI-compatible / llama.cpp / vLLM)**, and **Ollama (Llama 3.2, Phi, Mistral)**.
 
-##### Setting up Gemini API
-Since Google Gemini provides a free tier, you can easily run evaluations without OpenAI API costs:
-```bash
-export GEMINI_API_KEY="your_gemini_api_key_here"
-```
-Or insert your API key into `config/gemini.yaml` (or `config/gemini_15_flash.yaml`, `config/gemini_25_flash.yaml`).
+For detailed empirical benchmark findings across all evaluated tasks, see [experimental_results.md](experimental_results.md).
 
-##### Running Evaluation
-Execute the following commands to generate responses and compute attack success rate (ASR):
+---
 
-```bash
-cd examples
+##### 1. Google Gemini API
+Google Gemini provides a free API tier and can be used for both generating model responses and computing evaluation metrics (ASR):
 
-# 1. Generate model responses (e.g. using Gemini 1.5 Flash):
-python run.py --seed 2023 --dataset_name {task} \
---context_data_file ../benchmark/{task}/test.jsonl \
---attack_data_file ../benchmark/text_attack_test.json \
---llm_config_file ../config/gemini.yaml \
---batch_size 20 --output_path ../output/gemini_{task}.jsonl \
---log_steps 10 --resume
+1. **Set Environment Variable or Configuration**:
+   ```bash
+   export GEMINI_API_KEY="your_gemini_api_key_here"
+   ```
+   Alternatively, add your API key to `.env` or in `config/gemini.yaml`.
 
-# 2. Compute attack success rate (ASR) using Gemini as judge:
-python run.py --mode evaluate --seed 2023 \
---dataset_name {task} \
---response_path ../output/gemini_{task}.jsonl \
---output_path ../output/gemini_{task}_asr.jsonl \
---eval_config_file ../config/gemini_eval.yaml \
---batch_size 20 --log_steps 10 --resume
-```
+2. **Generate Responses & Calculate ASR**:
+   ```bash
+   cd examples
+
+   # Generate model responses (e.g. on Email QA)
+   python run.py --seed 2023 --dataset_name email \
+     --context_data_file ../benchmark/email/test.jsonl \
+     --attack_data_file ../benchmark/text_attack_test.json \
+     --llm_config_file ../config/gemini.yaml \
+     --batch_size 20 --output_path ../output/gemini_email.jsonl \
+     --log_steps 10 --resume
+
+   # Compute attack success rate (ASR) using Gemini as judge:
+   python run.py --mode evaluate --seed 2023 \
+     --dataset_name email \
+     --response_path ../output/gemini_email.jsonl \
+     --output_path ../output/gemini_email_asr.jsonl \
+     --eval_config_file ../config/gemini_eval.yaml \
+     --batch_size 20 --log_steps 10 --resume
+   ```
+
+---
+
+##### 2. Qwen LLM (Local `llama-server` / vLLM / OpenAI-compatible API)
+Qwen models (e.g. Qwen 2.5 3B) can be hosted locally via `llama-server` (from `llama.cpp`) or vLLM with zero API costs:
+
+1. **Launch the local OpenAI-compatible server**:
+   ```bash
+   # Example: using llama-server with Qwen 2.5 3B GGUF
+   ./llama-server -m models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 --host 0.0.0.0 -ngl 99
+   ```
+
+2. **Configuration (`config/qwen25_3b.yaml`)**:
+   ```yaml
+   api_key: "not-needed"
+   api_base: "http://localhost:8080/v1"
+   api_type: "openai"
+   model: "qwen2.5-3b-instruct"
+   chat: True
+   llm_name: "gpt35"
+   max_tokens: 512
+   ```
+
+3. **Run All 5 Benchmark Tasks & Compute ASR**:
+   Convenience scripts are provided in `scripts/`:
+   ```bash
+   # Run inference across all 5 categories (100 samples each)
+   bash scripts/run_all.sh
+
+   # Compute ASR across all 5 categories
+   bash scripts/calc_all_asr.sh
+   ```
+
+---
+
+##### 3. Ollama (Offline Local Models)
+Ollama runs locally on CPU/GPU without API keys, external servers, or rate limits:
+
+1. **Install and start Ollama**:
+   Install Ollama from [ollama.com](https://ollama.com) and pull your target model:
+   ```bash
+   ollama serve
+   ollama pull llama3.2
+   ```
+
+2. **Configuration (`config/ollama_llama.yaml`)**:
+   ```yaml
+   llm_name: "ollama_llama"
+   model: "llama3.2"
+   base_url: "http://localhost:11434"
+   temperature: 0.0
+   max_tokens: 2048
+   ```
+
+3. **Generate Responses & Calculate ASR**:
+   ```bash
+   cd examples
+
+   # Generate model responses
+   python run.py --seed 2023 --dataset_name email \
+     --context_data_file ../benchmark/email/test.jsonl \
+     --attack_data_file ../benchmark/text_attack_test.json \
+     --llm_config_file ../config/ollama_llama.yaml \
+     --batch_size 1 --max_samples 100 \
+     --output_path ../output/ollama_email.jsonl --resume
+
+   # Compute ASR using Ollama as judge:
+   python run.py --mode evaluate --seed 2023 \
+     --dataset_name email \
+     --response_path ../output/ollama_email.jsonl \
+     --output_path ../output/ollama_email_asr.jsonl \
+     --eval_config_file ../config/ollama_eval.yaml \
+     --batch_size 1 --resume
+   ```
+   *(Windows PowerShell users can run `powershell -ExecutionPolicy Bypass -File ./run_all_ollama.ps1` to execute all tasks automatically).*
+
+---
 
 Arguments:
 - `task`: the selected task name, you can choose from `["code", "email", "qa", "abstract", "table"]`
-- `llm_name`: the name of the LLM config file in `config/` directory (e.g. `gemini`, `gemini_15_flash`, `gemini_25_flash`, `gpt35`, etc.)
-- `eval_config_file`: the evaluation judge model config file (e.g. `config/gemini_eval.yaml`, `config/gemini.yaml`, or `config/gpt35.yaml`). `--gpt_config_file` is also supported as an alias.
+- `llm_name`: the name of the LLM config file in `config/` directory (e.g. `gemini`, `qwen25_3b`, `ollama_llama`, `gpt35`, etc.)
+- `eval_config_file`: the evaluation judge model config file (e.g. `config/gemini_eval.yaml`, `config/ollama_eval.yaml`, `config/qwen25_3b.yaml`, or `config/gpt35.yaml`). `--gpt_config_file` is also supported as an alias.
 
 ### Defense
 We also propose two type of defense methods.

@@ -7,14 +7,27 @@ import os
 import re
 import time
 import openai
-from openai.error import (
-    RateLimitError,
-    InvalidRequestError,
-    Timeout,
-    APIConnectionError,
-    ServiceUnavailableError,
-    APIError,
-)
+try:
+    from openai.error import (
+        RateLimitError,
+        InvalidRequestError,
+        Timeout,
+        APIConnectionError,
+        ServiceUnavailableError,
+        APIError,
+    )
+except ImportError:
+    try:
+        from openai import (
+            RateLimitError,
+            BadRequestError as InvalidRequestError,
+            APITimeoutError as Timeout,
+            APIConnectionError,
+            InternalServerError as ServiceUnavailableError,
+            APIError,
+        )
+    except ImportError:
+        RateLimitError = InvalidRequestError = Timeout = APIConnectionError = ServiceUnavailableError = APIError = Exception
 
 import logging
 
@@ -151,13 +164,18 @@ class GPTModel(BaseModel):
 
     def generate(self, data: Any, **kwargs):
         temperature = kwargs.pop("temperature", 0)
+        max_tokens = self.config.get("max_tokens", kwargs.pop("max_tokens", 512))
         if self.config["chat"]:
             rslts = []
             for message in data["message"]:
-                rslt = self.chat_completion(message, temperature=temperature)
+                rslt = self.chat_completion(
+                    message, temperature=temperature, max_tokens=max_tokens
+                )
                 rslts.extend(rslt)
         else:
-            rslts = self.completion(data["message"], temperature=temperature)
+            rslts = self.completion(
+                data["message"], temperature=temperature, max_tokens=max_tokens
+            )
         return rslts
 
 

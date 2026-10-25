@@ -8,6 +8,26 @@ import logging
 logger = logging.getLogger(__name__)
 
 from .gpt import GPT35, GPT4, GPT35WOSystem, GPT4WOSystem
+from .ollama_model import (
+    OllamaModel,
+    OllamaModelWSystem,
+    OllamaModelWOSystem,
+    OllamaLlama,
+    OllamaPhi,
+    OllamaMistral,
+)
+
+
+class Qwen(GPT35):
+    """Qwen model running via OpenAI-compatible endpoint (e.g. llama-server or vLLM)."""
+    pass
+
+
+class QwenWOSystem(GPT35WOSystem):
+    """Qwen model without system prompt."""
+    pass
+
+
 from .gemini import (
     Gemini,
     GeminiWOSystem,
@@ -64,6 +84,14 @@ LLM_NAME_TO_CLASS = OrderedDict(
         ("gpt4", GPT4),
         ("gpt35_wosys", GPT35WOSystem),
         ("gpt4_wosys", GPT4WOSystem),
+        ("ollama", OllamaModel),
+        ("ollama_llama", OllamaLlama),
+        ("ollama_phi", OllamaPhi),
+        ("ollama_mistral", OllamaMistral),
+        ("ollama_wosys", OllamaModelWOSystem),
+        ("qwen", Qwen),
+        ("qwen_wosys", QwenWOSystem),
+        ("qwen25_3b", Qwen),
     ]
 )
 

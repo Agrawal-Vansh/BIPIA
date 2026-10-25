@@ -40,10 +40,10 @@ Run the automated pipeline to execute all 5 tasks (`email`, `code`, `table`, `qa
 $env:PYTHONIOENCODING = "utf-8"
 
 # Run the complete benchmark
-.\run_all_ollama.ps1
+.\scripts\run_all_ollama.ps1
 ```
 
-> **Note**: To adjust the sample size per task, open `run_all_ollama.ps1` and edit line 13:
+> **Note**: To adjust the sample size per task, open `scripts/run_all_ollama.ps1` and edit line 17:
 > `$max_samples = 100` (e.g. set to `50` for a quicker run).
 
 ---
@@ -63,4 +63,4 @@ Once the run completes, all results are stored in the [`output/`](output/) direc
 - **Connection Error / Server not running**:
   Make sure Ollama is running by opening a terminal and typing `ollama serve`.
 - **Interrupted Run**:
-  If the run is interrupted, simply re-run `.\run_all_ollama.ps1`. The pipeline automatically resumes from where it left off.
+  If the run is interrupted, simply re-run `.\scripts\run_all_ollama.ps1`. The pipeline automatically resumes from where it left off.

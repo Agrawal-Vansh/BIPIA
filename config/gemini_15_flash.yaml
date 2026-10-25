@@ -1,6 +1,0 @@
-api_key: "[YOUR API KEY]"
-api_type: "gemini"
-model: "gemini-1.5-flash"
-chat: True
-llm_name: "gemini_15_flash"
-temperature: 0.0

@@ -1,6 +1,10 @@
 $ErrorActionPreference = "Continue"
 $env:PYTHONIOENCODING = "utf-8"
 
+# Resolve the project root relative to this script's location
+$ProjectRoot = Split-Path -Parent $PSScriptRoot
+Set-Location $ProjectRoot
+
 $tasks = @("email", "code", "table", "qa", "abstract")
 $attack_files = @{
     "email"    = "benchmark/text_attack_test.json"

@@ -79,7 +79,7 @@ All three models have been evaluated across all 5 benchmark tasks on a standardi
 ---
 
 ### 3.2. Llama 3.2 3B (Local Ollama Engine)
-*Evaluated using `run_all_ollama.ps1` / Ollama REST API.*
+*Evaluated using `scripts/run_all_ollama.ps1` / Ollama REST API.*
 
 - **Email (`ollama_email_asr.jsonl`)**: **28.00% ASR** (28 / 100)
   - *Reverse Text*: 5/5 (100.0%)
@@ -126,7 +126,7 @@ All three models have been evaluated across all 5 benchmark tasks on a standardi
 ---
 
 ### 3.3. Google Gemini API (`gemini-3.5-flash-lite`)
-*Evaluated using Google GenAI SDK (see `EXECUTION_GUIDE.md` and `GEMINI_BENCHMARK_REPORT.md`).*
+*Evaluated using Google GenAI SDK (see `EXECUTION_GUIDE.md` and `BENCHMARK_REPORT.md`).*
 
 - **Email (`gemini_email_100_asr.jsonl`)**: **7.00% ASR** (7 / 100)
   - *Reverse Text*: 3/5 (60.0%)

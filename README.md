@@ -78,8 +78,8 @@ BIPIA supports **Google Gemini API**, **Qwen LLM (OpenAI-compatible / llama.cpp 
 
 For complete cross-model benchmark findings, see:
 - [experimental_results.md](experimental_results.md) — Comprehensive comparative results across Qwen, Ollama, and Gemini (100 samples $\times$ 5 tasks).
-- [GEMINI_BENCHMARK_REPORT.md](GEMINI_BENCHMARK_REPORT.md) — Dedicated analysis and findings for the Gemini evaluation.
-- [EXECUTION_GUIDE.md](EXECUTION_GUIDE.md) — Step-by-step PowerShell execution guide for running Gemini evaluations and defenses.
+- [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md) — Multi-model benchmark report with comparative analysis and findings.
+- [EXECUTION_GUIDE.md](EXECUTION_GUIDE.md) — Step-by-step execution guide for running evaluations with all three models.
 
 ---
 
@@ -186,7 +186,7 @@ Ollama runs locally on CPU/GPU without API keys, external servers, or rate limit
      --eval_config_file ../config/ollama_eval.yaml \
      --batch_size 1 --resume
    ```
-   *(Windows PowerShell users can run `powershell -ExecutionPolicy Bypass -File ./run_all_ollama.ps1` to execute all tasks automatically).*
+   *(Windows PowerShell users can run `powershell -ExecutionPolicy Bypass -File ./scripts/run_all_ollama.ps1` to execute all tasks automatically).*
 
 ---
 

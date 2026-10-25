@@ -74,9 +74,12 @@ For different task of different split (train/test), set `context_data_file` as t
 
 #### Evaluation
 In our work, we evaluate the robustness of large language models to indirect prompt injection attacks on BIPIA.
-BIPIA supports **OpenAI (GPT)**, **Google Gemini API**, **Qwen LLM (OpenAI-compatible / llama.cpp / vLLM)**, and **Ollama (Llama 3.2, Phi, Mistral)**.
+BIPIA supports **Google Gemini API**, **Qwen LLM (OpenAI-compatible / llama.cpp / vLLM)**, and **Ollama (Llama 3.2, Phi, Mistral)**.
 
-For detailed empirical benchmark findings across all evaluated tasks, see [experimental_results.md](experimental_results.md).
+For complete cross-model benchmark findings, see:
+- [experimental_results.md](experimental_results.md) — Comprehensive comparative results across Qwen, Ollama, and Gemini (100 samples $\times$ 5 tasks).
+- [GEMINI_BENCHMARK_REPORT.md](GEMINI_BENCHMARK_REPORT.md) — Dedicated analysis and findings for the Gemini evaluation.
+- [EXECUTION_GUIDE.md](EXECUTION_GUIDE.md) — Step-by-step PowerShell execution guide for running Gemini evaluations and defenses.
 
 ---
 

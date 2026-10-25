@@ -9,5 +9,6 @@ diff.sh
 config/my_gpt35.yaml
 *.log
 .env
+*:Zone.Identifier
 
 .venv/
